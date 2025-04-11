@@ -1,0 +1,3 @@
+<?php
+// SME Employee Dashboard
+?>
