@@ -1,24 +1,25 @@
 <?php
-require '../config/db.php';
+require 'config/db.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $email = $_POST['email'];
-  $phone = $_POST['phone'];
-  $password = password_hash($_POST['password'], PASSWORD_ARGON2ID);
-  $access_code = $_POST['access_code'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $role = $_POST['role'];
 
-  $codeCheck = $pdo->prepare("SELECT * FROM access_codes WHERE code = ? AND used = 0 AND expires_at > NOW()");
-  $codeCheck->execute([$access_code]);
-  $valid = $codeCheck->fetch();
+    $hashedPassword = password_hash($password, PASSWORD_ARGON2ID);
+    $stmt = $pdo->prepare("INSERT INTO users (email, password, role) VALUES (?, ?, ?)");
+    $stmt->execute([$email, $hashedPassword, $role]);
 
-  if ($valid) {
-    $role = $valid['role'];
-    $stmt = $pdo->prepare("INSERT INTO users (email, password, phone, role) VALUES (?, ?, ?, ?)");
-    $stmt->execute([$email, $password, $phone, $role]);
-
-    $pdo->prepare("UPDATE access_codes SET used = 1 WHERE id = ?")->execute([$valid['id']]);
-    echo "Registration successful. <a href='login.php'>Login</a>";
-  } else {
-    echo "Invalid or expired access code.";
-  }
+    echo "Registration successful. <a href='index.php'>Login here</a>";
 }
 ?>
+
+<!-- HTML Form for Registration (add Bootstrap later) -->
+<form method="post">
+  <input type="email" name="email" placeholder="Email" required><br>
+  <input type="password" name="password" placeholder="Password" required><br>
+  <select name="role">
+    <option value="user">User</option>
+    <option value="employee">Employee</option>
+  </select><br>
+  <input type="submit" value="Register">
+</form>
