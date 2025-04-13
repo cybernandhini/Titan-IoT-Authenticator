@@ -1,8 +1,7 @@
 <?php
 session_start();
 require 'config/db.php';
-if ($_SESSION['user']['role'] !== 'admin') exit('Not authorized');
-
+if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') exit('Not authorized');
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $email = $_POST['email'];
   $role = $_POST['role'];
