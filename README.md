@@ -1,47 +1,43 @@
-# Titan IoT Authenticator (v0.1)
+TITAN IOT AUTHENTICATOR (V0.1)
 
-**Private Authentication System for IoT-focused SMEs**  
-Developed by Cyber Nandhini
+Private Authentication System for IoT-focused SMEs  - Developed by    Cyber Nandhini
 
----
+ OVERVIEW :
 
-## Overview
-Titan IoT Authenticator is a lightweight, modular, and secure authentication system built using PHP and MySQL, designed specifically for small and medium-sized enterprises operating in IoT-driven environments. This system supports user and employee access levels, secure credential handling using Argon2, session management, and an extensible structure ready for OTP, audit logging, and IoT integration.
+Titan IoT Authenticator    is a lightweight, secure, and modular authentication system tailored for Small and Medium-sized Enterprises (SMEs) operating within IoT environments. Built with PHP, MySQL (PDO), and Argon2ID for secure password hashing, this TRL 4-level prototype supports multiple roles (User, Employee), is easily extensible, and is structured for scalable deployment and IoT integration.
 
----
+ FEATURES :
 
-## Features
-- Argon2ID-based password hashing
-- Role-based login and redirection (User / Employee)
+- Argon2ID-based    password hashing (OWASP-compliant)
+- Role-based    login: `user`, `employee` (SME)
+- Modular code structure for feature scaling (OTP, MFA, etc.)
+- Environment configuration via `.env` file
 - Secure session handling and logout
-- IoT context dashboard placeholders
-- PDO-based database interaction
-- Configurable using `.env` (local credentials)
+- Prepared for dashboard and activity logging
+- Compatible with Docker, LAMP, GitHub Codespaces
 
----
+ FILE STRUCTURE :
 
-## File Structure
 ```
-├── index.php                    # Redirect to login
-├── login.php                    # Login form
-├── login_process.php            # Processes login request
-├── logout.php                   # Terminates session
-├── dashboard_user.php           # IoT user dashboard
-├── dashboard_employee.php       # SME employee dashboard
-├── config/
-│   └── db.php                   # PDO DB connection using .env
-├── logs/
-│   └── access.log               # (optional) login activity log
-├── user.sql                     # Users table SQL schema
-├── .env                         # Environment credentials (not committed)
-└── README.md                    # Project documentation
+🔹 index.php                    # Redirect to login
+🔹 login.php                    # Login form
+🔹 login_process.php           # Processes login request securely
+🔹 logout.php                  # Terminates session
+🔹 dashboard_user.php          # IoT dashboard for user role
+🔹 dashboard_employee.php      # Admin dashboard for SME employee
+🔹 config/
+├── db.php                  # PDO DB connection via .env
+🔹 logs/
+├── access.log              # Optional login activity tracking
+🔹 user.sql                    # SQL schema for `users` table
+🔹 .env                        # Local DB credentials (not versioned)
+🔹 README.md                   # Project documentation
 ```
 
----
+DATABSE SETUP :
 
-## Database Setup
-1. Create a new MySQL database (e.g., `titan_iot`).
-2. Import `user.sql` to generate the `users` table:
+1. Create a new MySQL database: `titan_iot`
+2. Execute the following SQL to create the user table:
 ```sql
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -50,12 +46,10 @@ CREATE TABLE users (
     role ENUM('user', 'employee') DEFAULT 'user'
 );
 ```
+3. Manually insert test users, or build a `register.php` page for onboarding.
 
-3. Add sample users or register manually.
+ENVIRONMENT CONFIGURATION :
 
----
-
-## Environment Configuration
 Create a `.env` file in the root directory:
 ```
 DB_HOST=localhost
@@ -63,40 +57,58 @@ DB_NAME=titan_iot
 DB_USER=root
 DB_PASS=yourpassword
 ```
-Ensure `vlucas/phpdotenv` is installed via Composer if used.
 
----
+> Requires [`vlucas/phpdotenv`](https://github.com/vlucas/phpdotenv):
+```bash
+composer require vlucas/phpdotenv
+```
 
-## Running the Application
-Run the built-in PHP server in the root folder:
+RUNNING THE APPLICATION :
+
+1. Navigate to project root.
+2. Start PHP server:
 ```bash
 php -S localhost:8000
 ```
-Then visit:
+3. Visit in browser:
 ```
 http://localhost:8000
 ```
 
----
+ROLES & ACCESS :
 
-## Roles
-| Role       | Description                             |
-|------------|-----------------------------------------|
-| `user`     | Basic IoT dashboard access              |
-| `employee` | SME admin dashboard, broader access     |
+| Role       | Access Level                              |
+|            |                                          -|
+| `user`     | Standard IoT dashboard                    |
+| `employee` | Administrative dashboard with wider access|
 
----
+How Argon2ID Hashing Works
 
-## Future Additions (Planned v0.2+)
-- OTP Integration via Twilio or Email
-- Session timeout / audit log tracking
-- IoT energy flow visualizations (Solar/Grid/H2)
-- Role permission matrix
-- Docker deployment
+- Passwords are    never    stored or transmitted in plaintext.
+- During registration, the password is hashed using:
+```php
+$passwordHash = password_hash($plainPassword, PASSWORD_ARGON2ID);
+```
+- During login, the stored hash is validated using:
+```php
+password_verify($submittedPassword, $passwordHashFromDB);
+```
+- This ensures that even if the database is compromised, original passwords are unrecoverable.
 
----
+Roadmap (v0.2+)
 
-## License
-This is a private repository developed by Cyber Nandhini for SME authentication systems. Not open-source.
+- OTP Verification (Twilio / Email)
+- Audit Logs & Role Matrix
+- IoT Flow Dashboards (Solar/Grid/Hydrogen)
+- Docker Image for quick deployment
+- Admin-level User Management Interface
 
----
+LICENSE :
+
+This is a    private repository    maintained by    Cyber Nandhini    for pilot SME implementations and cybersecurity innovation. Not for commercial reuse or redistribution.
+
+CONTACT :
+
+- Developed by:    Cyber Nandhini     
+- Lead Developer: Nandhini Thiruneelakandan
+- mailto: cybernandhini@gmail.com
